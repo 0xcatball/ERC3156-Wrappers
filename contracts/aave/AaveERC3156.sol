@@ -105,12 +105,12 @@ contract AaveERC3156 is IERC3156FlashLender, AaveFlashBorrowerLike {
         uint256 fee = fees[0];
 
         // Send the tokens to the original receiver using the ERC-3156 interface
-        IERC20(token).transfer(receiver, amount);
+        IERC20(token).transfer(address(receiver), amount);
         require(
             receiver.onFlashLoan(origin, token, amount, fee, userData) == CALLBACK_SUCCESS,
             "Callback failed"
         );
-        IERC20(token).transferFrom(receiver, address(this), amount.add(fee));
+        IERC20(token).transferFrom(address(receiver), address(this), amount.add(fee));
 
         // Approve the LendingPool contract allowance to *pull* the owed amount
         IERC20(token).approve(address(lendingPool), amount.add(fee));
